@@ -16,8 +16,8 @@ from torch import distributed
 from torch.distributed import ProcessGroup
 from torch.distributed.fsdp import (BackwardPrefetch, CPUOffload, FullyShardedDataParallel, MixedPrecision,
                                     ShardingStrategy)
-from torch.distributed.fsdp._utils import _contains_batchnorm, _override_batchnorm_mixed_precision
-from torch.distributed.fsdp.wrap import _or_policy, _wrap, _wrap_batchnorm_individually
+# from torch.distributed.fsdp._utils import _contains_batchnorm, _override_batchnorm_mixed_precision
+# from torch.distributed.fsdp.wrap import _or_policy, _wrap, _wrap_batchnorm_individually
 
 from composer.core import Precision
 from composer.utils import dist
@@ -311,7 +311,7 @@ class MosaicFullyShardedDataParallel(FullyShardedDataParallel):
                 raise ValueError(f'Expected {module_name} to NOT be FullyShardedDataParallel '
                                  'if using an `auto_wrap_policy`')
         mixed_precision = fsdp_kwargs['mixed_precision']
-        if mixed_precision is not None and _contains_batchnorm(root_module):
+        if False and  mixed_precision is not None and _contains_batchnorm(root_module):
             _override_batchnorm_mixed_precision(root_module)
             auto_wrap_policy = functools.partial(_or_policy, policies=[_wrap_batchnorm_individually, auto_wrap_policy])
             warnings.warn('Both mixed precision and an `auto_wrap_policy` were specified '
